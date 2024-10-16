@@ -1,0 +1,38 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    {% if user.is_authenticated %}
+
+        <h2>{{ viewed_user.username }}'s Profile</h2>
+
+        <p>Followers: {{ viewed_user.fans.count }}</p>
+        <p>Following: {{ viewed_user.follows.count }}</p>
+
+        {% if user != viewed_user %}
+            <form method="post" action="{% url 'network:profile' viewed_user.id %}">
+            {% csrf_token %}
+            {% if is_following %}
+                <button type="submit">Unfollow</button>
+            {% else %}
+                <button type="submit">Follow</button>
+            {% endif %}
+            </form>
+        {% endif %}
+
+        {% for post in viewed_user.posts.all %}
+            <div class="listing">
+                <h4>
+                    {{ viewed_user.username }}
+                </h4>
+                <p>{{ post.body }}</p>
+                <p class="created-at">{{ post.created }}</p>
+                <p>Likes: {{ post.likes }}</p>
+                <p>Comment</p>
+            </div>
+        {% endfor %}
+
+    {% endif %}
+
+{% endblock %}
+
